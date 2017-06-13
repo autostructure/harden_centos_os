@@ -1,12 +1,12 @@
-# hardencentos
+# harden_centos_os
 
 #### Table of Contents
 
 1. [Description](#description)
-1. [Setup - The basics of getting started with hardencentos](#setup)
-    * [What hardencentos affects](#what-hardencentos-affects)
+1. [Setup - The basics of getting started with harden_centos_os](#setup)
+    * [What hardencentos affects](#what-harden_centos_os-affects)
     * [Setup requirements](#setup-requirements)
-    * [Beginning with hardencentos](#beginning-with-hardencentos)
+    * [Beginning with hardencentos](#beginning-with-harden_centos_os)
 1. [Usage - Configuration options and additional functionality](#usage)
 1. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
 1. [Limitations - OS compatibility, etc.](#limitations)
@@ -25,7 +25,7 @@ management, etc.), this is the time to mention it.
 
 ## Setup
 
-### What hardencentos affects **OPTIONAL**
+### What harden_centos_os affects **OPTIONAL**
 
 If it's obvious what your module touches, you can skip this section. For
 example, folks can probably figure out that your mysql_instance module affects

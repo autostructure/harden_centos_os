@@ -1,5 +1,5 @@
 {
-  "name": "autostructure-hardencentos",
+  "name": "autostructure-harden_centos_os",
   "version": "0.1.0",
   "author": "autostructure",
   "summary": null,
@@ -12,4 +12,3 @@
   ],
   "data_provider": null
 }
-

@@ -1,7 +1,7 @@
-# Class: hardencentos
+# Class: harden_centos_os
 # ===========================
 #
-# Full description of class hardencentos here.
+# Full description of class harden_centos_os here.
 #
 # Parameters
 # ----------
@@ -28,21 +28,23 @@
 # --------
 #
 # @example
-#    class { 'hardencentos':
+#    class { 'harden_centos_os':
 #      servers => [ 'pool.ntp.org', 'ntp.local.company.com' ],
 #    }
 #
 # Authors
 # -------
 #
-# Author Name <author@domain.com>
+# Author Name <jeff@autostructure.com>
 #
 # Copyright
 # ---------
 #
-# Copyright 2017 Your name here, unless otherwise noted.
+# Copyright 2017 Autostructure.
 #
-class hardencentos {
+class harden_centos_os(
+  $host,
+) {
 
 
 }
