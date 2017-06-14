@@ -16,3 +16,7 @@ else
   # rubocop requires ruby >= 1.9
   gem 'rubocop'
 end
+
+group :acceptance do
+  gem 'beaker-rspec'
+end

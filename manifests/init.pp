@@ -43,8 +43,9 @@
 # Copyright 2017 Autostructure.
 #
 class harden_centos_os(
-  $host,
+  Hash $managed_files,
 ) {
-
+  # Enforce file and directory rules
+  create_resources('file', $managed_files)
 
 }

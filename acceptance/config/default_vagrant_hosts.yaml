@@ -1,0 +1,31 @@
+---
+HOSTS:
+  ubuntu1404-64-1:
+    pe_dir: 
+    pe_ver: 
+    pe_upgrade_dir: 
+    pe_upgrade_ver: 
+    platform: ubuntu-14.04-amd64
+    hypervisor: vagrant
+    roles:
+    - agent
+    - master
+    - database
+    - dashboard
+    - classifier
+    - default
+  ubuntu1404-64-2:
+    pe_dir: 
+    pe_ver: 
+    pe_upgrade_dir: 
+    pe_upgrade_ver: 
+    platform: ubuntu-14.04-amd64
+    hypervisor: vagrant
+    roles:
+    - agent
+    - frictionless
+CONFIG:
+  nfs_server: none
+  consoleport: 443
+  box_url: https://vagrantcloud.com/puppetlabs/boxes/ubuntu-14.04-64-nocm
+  box: puppetlabs/ubuntu-14.04-64-nocm

@@ -2,13 +2,13 @@
   "name": "autostructure-harden_centos_os",
   "version": "0.1.0",
   "author": "autostructure",
-  "summary": null,
+  "summary": "Hardens the Centos_OS to Dod and NITC-808 standards",
   "license": "Apache-2.0",
-  "source": "",
-  "project_page": null,
-  "issues_url": null,
+  "source": "https://github.com/autostructure/harden_centos_os",
+  "project_page": "https://github.com/autostructure/harden_centos_os",
+  "issues_url": "https://github.com/autostructure/harden_centos_os/issues",
   "dependencies": [
-    {"name":"puppetlabs-stdlib","version_requirement":">= 1.0.0"}
+    {"name":"puppetlabs-stdlib","version_requirement":">= 1.0.0 < 2.0.0"}
   ],
   "data_provider": null
 }
