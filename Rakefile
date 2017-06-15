@@ -1,15 +1,17 @@
+require 'rubygems'
+require 'bundler/setup'
+
 require 'puppetlabs_spec_helper/rake_tasks'
+require 'puppet_blacksmith/rake_tasks'
+require 'puppet/version'
 require 'puppet-lint/tasks/puppet-lint'
-require 'metadata-json-lint/rake_task'
+require 'puppet-syntax/tasks/puppet-syntax'
+require 'rubocop/rake_task'
 
 if RUBY_VERSION >= '1.9'
   require 'rubocop/rake_task'
   RuboCop::RakeTask.new
 end
-
-PuppetLint.configuration.send('disable_80chars')
-PuppetLint.configuration.relative = true
-PuppetLint.configuration.ignore_paths = ['spec/**/*.pp', 'pkg/**/*.pp']
 
 desc 'Validate manifests, templates, and ruby files'
 task :validate do
@@ -24,9 +26,50 @@ task :validate do
   end
 end
 
-desc 'Run metadata_lint, lint, validate, and spec tests.'
-task :test do
-  %i[metadata_lint lint validate spec].each do |test|
-    Rake::Task[test].invoke
-  end
+# require 'controlrepo/rake_tasks'
+
+# These gems aren't always present, for instance
+# on Travis with --without development
+begin
+  require 'puppet_blacksmith/rake_tasks'
+rescue LoadError # rubocop:disable Lint/HandleExceptions
 end
+
+# RuboCop::RakeTask.new
+
+Rake::Task[:lint].clear
+
+PuppetLint.configuration.relative = true
+PuppetLint.configuration.disable_80chars
+PuppetLint.configuration.disable_class_inherits_from_params_class
+PuppetLint.configuration.disable_class_parameter_defaults
+PuppetLint.configuration.fail_on_warnings = true
+PuppetLint.configuration.ignore_paths = ['spec/**/*.pp', 'pkg/**/*.pp']
+
+exclude_paths = [
+  "bundle/**/*",
+  "pkg/**/*",
+  "vendor/**/*",
+  "spec/**/*"
+]
+
+PuppetLint::RakeTask.new :lint do |config|
+  config.ignore_paths = exclude_paths
+end
+
+PuppetSyntax.exclude_paths = exclude_paths
+
+desc "Populate CONTRIBUTORS file"
+task :contributors do
+  system("git log --format='%aN' | sort -u > CONTRIBUTORS")
+end
+
+desc "Run syntax, lint, and spec tests."
+task test: %i[
+  syntax
+  metadata_lint
+  lint
+  validate
+  rubocop
+  spec
+]

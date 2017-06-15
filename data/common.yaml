@@ -1,2 +1,121 @@
 ---
-managed_files: {}
+harden_centos_os::managed_files:
+  /etc/motd:
+    ensure: directory
+    owner: root
+    group: root
+    mode: '0644'
+  /etc/issue:
+    ensure: directory
+    owner: root
+    group: root
+    mode: '0644'
+  /etc/issue.net:
+    ensure: file
+    owner: root
+    group: root
+    mode: '0644'
+  /etc/hosts.allow:
+    ensure: file
+    owner: root
+    group: root
+    mode: '0644'
+  /etc/hosts.deny:
+    ensure: file
+    owner: root
+    group: root
+    mode: '0644'
+  /etc/crontab:
+    ensure: file
+    owner: root
+    group: root
+    mode: 'og-rwx'
+  /etc/crontab.hourly:
+    ensure: directory
+    owner: root
+    group: root
+    mode: 'og-rwx'
+  /etc/crontab.daily:
+    ensure: directory
+    owner: root
+    group: root
+    mode: 'og-rwx'
+  /etc/crontab.weekly:
+    ensure: directory
+    owner: root
+    group: root
+    mode: 'og-rwx'
+  /etc/crontab.monthly:
+    ensure: directory
+    owner: root
+    group: root
+    mode: 'og-rwx'
+  /etc/cron.d:
+    ensure: directory
+    owner: root
+    group: root
+    mode: 'og-rwx'
+  /etc/cron.deny:
+    ensure: absent
+  /etc/at.deny:
+    ensure: absent
+  /etc/cron.allow:
+    ensure: directory
+    owner: root
+    group: root
+    mode: 'og-rwx'
+  /etc/at.allow:
+    ensure: directory
+    owner: root
+    group: root
+    mode: 'og-rwx'
+  /etc/ssh/sshd_config:
+    ensure: file
+    owner: root
+    group: root
+    mode: 'og-rwx'
+  /etc/passwd:
+    ensure: file
+    owner: root
+    group: root
+    mode: '0644'
+  /etc/shadow:
+    ensure: file
+    owner: root
+    group: root
+    mode: '0000'
+  /etc/group:
+    ensure: file
+    owner: root
+    group: root
+    mode: '0644'
+  /etc/gshadow:
+    ensure: file
+    owner: root
+    group: root
+    mode: '0000'
+  /etc/passwd-:
+    ensure: file
+    owner: root
+    group: root
+    mode: '0600'
+  /etc/shadow-:
+    ensure: file
+    owner: root
+    group: root
+    mode: '0600'
+  /etc/group-:
+    ensure: file
+    owner: root
+    group: root
+    mode: '0600'
+  /etc/gshadow-:
+    ensure: file
+    owner: root
+    group: root
+    mode: '0600'
+  /boot/grub2/grub.cfg:
+    ensure: file
+    owner: root
+    group: root
+    mode: 'og-rwx'
