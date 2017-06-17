@@ -1,0 +1,28 @@
+fixtures:
+  symlinks:
+    profile: "#{source_dir}"
+  forge_modules:
+    kmod:
+      repo: "camptocamp/kmod"
+      ref: "2.1.0"
+    common:
+      repo: "ghoneycutt/common"
+      ref: "1.6.0"
+    ssh:
+      repo: "ghoneycutt/ssh"
+      ref: "3.52.0"
+    aide:
+      repo: "lhinds/aide"
+      ref: "1.0.2"
+    concat:
+      repo: "puppetlabs/concat"
+      ref: "4.0.1"
+    firewall:
+      repo: "puppetlabs/firewall"
+      ref: "1.9.0"
+    stdlib:
+      repo: "puppetlabs/stdlib"
+      ref: "4.17.1"
+    rsyslog:
+      repo: "saz/rsyslog"
+      ref: "5.0.0"

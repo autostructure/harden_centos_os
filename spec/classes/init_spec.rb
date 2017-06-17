@@ -5,7 +5,10 @@ describe 'harden_centos_os' do
     on_supported_os.each do |os, facts|
       context "on #{os}" do
         let(:facts) do
-          facts
+          facts.merge(
+            'ssh_version' => 'OpenSSHxxx',
+            'ssh_version_numeric' => '1.0.0'
+          )
         end
 
         # let(:params) {

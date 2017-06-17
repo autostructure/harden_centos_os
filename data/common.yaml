@@ -69,11 +69,6 @@ harden_centos_os::managed_files:
     owner: root
     group: root
     mode: 'og-rwx'
-  /etc/ssh/sshd_config:
-    ensure: file
-    owner: root
-    group: root
-    mode: 'og-rwx'
   /etc/passwd:
     ensure: file
     owner: root
@@ -119,3 +114,263 @@ harden_centos_os::managed_files:
     owner: root
     group: root
     mode: 'og-rwx'
+
+harden_centos_os::kernel_module_installs:
+  cramfs:
+    command: /bin/true
+  freevxfs:
+    command: /bin/true
+  jffs2:
+    command: /bin/true
+  hfs:
+    command: /bin/true
+  hfsplus:
+    command: /bin/true
+  squashfs:
+    command: /bin/true
+  udf:
+    command: /bin/true
+  vfat:
+    command: /bin/true
+  dccp:
+    command: /bin/true
+  sctp:
+    command: /bin/true
+  rds:
+    command: /bin/true
+  tipc:
+    command: /bin/true
+
+harden_centos_os::managed_packages:
+  prelink:
+    ensure: absent
+  setroubleshoot:
+    ensure: absent
+  mcstrans:
+    ensure: absent
+  ntp:
+    ensure: present
+  chrony:
+    ensure: present
+  ypbind:
+    ensure: absent
+  rsh:
+    ensure: absent
+  talk:
+    ensure: absent
+  telnet:
+    ensure: absent
+  openldap-clients:
+    ensure: absent
+  tcp_wrappers:
+    ensure: present
+  # xorg-x11*:
+  #   ensure: absent
+
+classes:
+  # saz/rsyslog
+  # aide
+
+harden_centos_os::aide_rules:
+  /boot:
+    content: /boot NORMAL
+  /bin:
+    content: /bin NORMAL
+  /sbin:
+    content: /sbin NORMAL
+  /lib:
+    content: /lib NORMAL
+  /opt:
+    content: /opt NORMAL
+  /usr:
+    content: /usr NORMAL
+  /root:
+    content: /root NORMAL
+  /usr/src:
+    content: '!/usr/src'
+  /usr/tmp:
+    content: '!/usr/tmp'
+  /etc:
+    content: /etc PERMS
+  /etc/mtab:
+    content: '!/etc/mtab'
+  /etc/.*~:
+    content: '!/etc/.*~'
+  /etc/exports:
+    content: /etc/exports NORMAL
+  /etc/fstab:
+    content: /etc/fstab NORMAL
+  /etc/passwd:
+    content: /etc/passwd NORMAL
+  /etc/group:
+    content: /etc/group NORMAL
+  /etc/gshadow:
+    content: /etc/gshadow NORMAL
+  /etc/shadow:
+    content: /etc/shadow NORMAL
+  /etc/security/opasswd:
+    content: /etc/security/opasswd NORMAL
+  /etc/hosts.allow:
+    content: /etc/hosts.allow NORMAL
+  /etc/hosts.deny:
+    content: /etc/hosts.deny NORMAL
+  /etc/sudoers:
+    content: /etc/sudoers NORMAL
+  /etc/skel:
+    content: /etc/skel NORMAL
+  /etc/logrotate.d:
+    content: /etc/logrotate.d NORMAL
+  /etc/resolv.conf:
+    content: /etc/resolv.conf DATAONLY
+  /etc/nscd.conf:
+    content: /etc/nscd.conf NORMAL
+  /etc/securetty:
+    content: /etc/securetty NORMAL
+  /etc/profile:
+    content: /etc/profile NORMAL
+  /etc/bashrc:
+    content: /etc/bashrc NORMAL
+  /etc/bash_completion.d/:
+    content: /etc/bash_completion.d/ NORMAL
+  /etc/login.defs:
+    content: /etc/login.defs NORMAL
+  /etc/zprofile:
+    content: /etc/zprofile NORMAL
+  /etc/zshrc:
+    content: /etc/zshrc NORMAL
+  /etc/zlogin:
+    content: /etc/zlogin NORMAL
+  /etc/zlogout:
+    content: /etc/zlogout NORMAL
+  /etc/profile.d/:
+    content: /etc/profile.d/ NORMAL
+  /etc/X11/:
+    content: /etc/X11/ NORMAL
+  /etc/yum.conf:
+    content: /etc/yum.conf NORMAL
+  /etc/yumex.conf:
+    content: /etc/yumex.conf NORMAL
+  /etc/yumex.profiles.conf:
+    content: /etc/yumex.profiles.conf NORMAL
+  /etc/yum/:
+    content: /etc/yum/ NORMAL
+  /etc/yum.repos.d/:
+    content: /etc/yum.repos.d/ NORMAL
+  /var/log:
+    content: /var/log LOG
+  /var/log/sa:
+    content: '!/var/log/sa'
+  /var/log/aide/aide.log:
+    content: '!/var/log/aide/aide.log'
+  /var/log/aide/aide.report:
+    content: '!/var/log/aide/aide.report'
+  /etc/audit/:
+    content: /etc/audit/ LSPP
+  /etc/libaudit.conf:
+    content: /etc/libaudit.conf LSPP
+  /usr/sbin/stunnel:
+    content: /usr/sbin/stunnel LSPP
+  /var/spool/at:
+    content: /var/spool/at LSPP
+  /etc/at.allow:
+    content: /etc/at.allow LSPP
+  /etc/at.deny:
+    content: /etc/at.deny LSPP
+  /etc/cron.allow:
+    content: /etc/cron.allow LSPP
+  /etc/cron.deny:
+    content: /etc/cron.deny LSPP
+  /etc/cron.d/:
+    content: /etc/cron.d/ LSPP
+  /etc/cron.daily/:
+    content: /etc/cron.daily/ LSPP
+  /etc/cron.hourly/:
+    content: /etc/cron.hourly/ LSPP
+  /etc/cron.monthly/:
+    content: /etc/cron.monthly/ LSPP
+  /etc/cron.weekly/:
+    content: /etc/cron.weekly/ LSPP
+  /etc/crontab:
+    content: /etc/crontab LSPP
+  /var/spool/cron/root:
+    content: /var/spool/cron/root LSPP
+  /var/log/faillog:
+    content: /var/log/faillog LSPP
+  /var/log/lastlog:
+    content: /var/log/lastlog LSPP
+  /etc/hosts:
+    content: /etc/hosts LSPP
+  /etc/sysconfig:
+    content: /etc/sysconfig LSPP
+  /etc/inittab:
+    content: /etc/inittab LSPP
+  /etc/grub:
+    content: /etc/grub LSPP
+  /etc/rc.d:
+    content: /etc/rc.d LSPP
+  /etc/ld.so.conf:
+    content: /etc/ld.so.conf LSPP
+  /etc/localtime:
+    content: /etc/localtime LSPP
+  /etc/sysctl.conf:
+    content: /etc/sysctl.conf LSPP
+  /etc/pam.d:
+    content: /etc/pam.d LSPP
+  /etc/security:
+    content: /etc/security LSPP
+  /etc/aliases:
+    content: /etc/aliases LSPP
+  /etc/postfix:
+    content: /etc/postfix LSPP
+  /etc/ssh/sshd_config:
+    content: /etc/ssh/sshd_config LSPP
+  /etc/ssh/ssh_config:
+    content: /etc/ssh/ssh_config LSPP
+  /etc/stunnel:
+    content: /etc/stunnel LSPP
+  /etc/vsftpd.ftpusers:
+    content: /etc/vsftpd.ftpusers LSPP
+  /etc/vsftpd:
+    content: /etc/vsftpd LSPP
+  /etc/issue:
+    content: /etc/issue LSPP
+  /etc/issue.net:
+    content: /etc/issue.net LSPP
+  /etc/cups:
+    content: /etc/cups LSPP
+  /var/log/and-httpd:
+    content: '!/var/log/and-httpd'
+
+ssh::permit_root_login: no
+ssh::sshd_config_loglevel: INFO
+ssh::sshd_config_permitemptypasswords: no
+ssh::sshd_config_permituserenvironment: no
+ssh::sshd_config_login_grace_time: 60
+
+ssh::sshd_config_ciphers:
+  - aes256-ctr
+  - aes192-ctr
+  - aes128-ctr
+
+ssh::sshd_config_kexalgorithms:
+ssh::sshd_config_macs:
+  - MACs hmac-sha2-512-etm@openssh.com
+  - hmac-sha2-256-etm@openssh.com
+  - umac-128-etm@openssh.com
+  - hmac-sha2-512
+  - hmac-sha2-256
+  - umac-128@openssh.com
+
+ssh::sshd_config_allowgroups: []
+ssh::sshd_config_allowusers: []
+ssh::sshd_config_denygroups: []
+ssh::sshd_config_denyusers: []
+ssh::sshd_config_maxauthtries: 4
+ssh::sshd_banner_content: /etc/issue.net
+ssh::sshd_client_alive_count_max: 0
+ssh::sshd_client_alive_interval: 300
+ssh::sshd_hostbasedauthentication: no
+ssh::sshd_ignorerhosts: yes
+ssh::sshd_config_owner: root
+ssh::sshd_config_group: root
+ssh::sshd_config_mode: og-rwx
