@@ -48,6 +48,8 @@ class harden_centos_os(
   Hash $managed_packages,
   Hash $aide_rules,
   Hash $sshd_configs,
+  Hash $kernel_parameters,
+  Hash $managed_services,
 ) {
   Firewall {
     require => undef,
@@ -59,4 +61,14 @@ class harden_centos_os(
 
   class { '::harden_centos_os::install': }
   -> class { '::harden_centos_os::configure': }
+  ~> class { '::harden_centos_os::run': }
+  -> Class['::harden_centos_os']
+
+  class { '::harden_centos_os::kernel_parameters': }
+  ~> class { '::harden_centos_os::kernel_parameters_flush': }
+  -> Class['::harden_centos_os']
+
+  class { '::harden_centos_os::pre_fw': }
+  -> class { '::harden_centos_os::post_fw': }
+  -> Class['::harden_centos_os']
 }

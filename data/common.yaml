@@ -148,10 +148,6 @@ harden_centos_os::managed_packages:
     ensure: absent
   mcstrans:
     ensure: absent
-  ntp:
-    ensure: present
-  chrony:
-    ensure: present
   ypbind:
     ensure: absent
   rsh:
@@ -166,6 +162,79 @@ harden_centos_os::managed_packages:
     ensure: present
   # xorg-x11*:
   #   ensure: absent
+
+harden_centos_os::managed_services:
+  slapd:
+    ensure: stopped
+    enable: false
+  nfs:
+    ensure: stopped
+    enable: false
+  rpcbind:
+    ensure: stopped
+    enable: false
+  named:
+    ensure: stopped
+    enable: false
+  vsftpd:
+    ensure: stopped
+    enable: false
+  httpd:
+    ensure: stopped
+    enable: false
+  dovecot:
+    ensure: stopped
+    enable: false
+  smb:
+    ensure: stopped
+    enable: false
+  squid:
+    ensure: stopped
+    enable: false
+  snmpd:
+    ensure: stopped
+    enable: false
+  ypserv:
+    ensure: stopped
+    enable: false
+  rsh.socket:
+    ensure: stopped
+    enable: false
+  rlogin.socket:
+    ensure: stopped
+    enable: false
+  rexec.socket:
+    ensure: stopped
+    enable: false
+  telnet.socket:
+    ensure: stopped
+    enable: false
+  tftp.socket:
+    ensure: stopped
+    enable: false
+  rsyncd:
+    ensure: stopped
+    enable: false
+  ntalk:
+    ensure: stopped
+    enable: false
+  autofs:
+    ensure: stopped
+    enable: false
+
+harden_centos_os::file_line_rules:
+  /etc/bashrc_umask:
+    ensure: present
+    match: ^umask
+    replace: true
+    path: /etc/bashrc
+    line: umask 027
+  /etc/profile_umask:
+    ensure: present
+    match: ^umask
+    replace: true
+    path: /etc/profile
+    line: umask 027
 
 harden_centos_os::aide_rules:
   /boot:
@@ -415,5 +484,3 @@ harden_centos_os::kernel_parameters:
     value: 0
   net.ipv6.conf.default.accept_redirects:
     value: 0
-  net.ipv4.route.flush:
-    value: 1
