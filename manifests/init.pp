@@ -47,23 +47,16 @@ class harden_centos_os(
   Hash $kernel_module_installs,
   Hash $managed_packages,
   Hash $aide_rules,
-  # Hash $sshd_config,
+  Hash $sshd_configs,
 ) {
-  # Enforce file and directory rules
-  create_resources('file', $managed_files)
+  Firewall {
+    require => undef,
+  }
 
-  # Install necessary kernel modules
-  create_resources('kmod::install', $kernel_module_installs)
+  resources { 'firewall':
+    purge => true,
+  }
 
-  # Enforce basic packag rules
-  create_resources('package', $managed_packages)
-
-  # Add aide rules
-  create_resources('aide::rule', $aide_rules)
-
-  # Run rsyslog
-  include ::rsyslog::client
-
-  # Enforce sshd rules
-  include ::ssh
+  class { '::harden_centos_os::install': }
+  -> class { '::harden_centos_os::configure': }
 }

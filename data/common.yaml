@@ -167,10 +167,6 @@ harden_centos_os::managed_packages:
   # xorg-x11*:
   #   ensure: absent
 
-classes:
-  # saz/rsyslog
-  # aide
-
 harden_centos_os::aide_rules:
   /boot:
     content: /boot NORMAL
@@ -341,36 +337,83 @@ harden_centos_os::aide_rules:
   /var/log/and-httpd:
     content: '!/var/log/and-httpd'
 
-ssh::permit_root_login: no
-ssh::sshd_config_loglevel: INFO
-ssh::sshd_config_permitemptypasswords: no
-ssh::sshd_config_permituserenvironment: no
-ssh::sshd_config_login_grace_time: 60
+harden_centos_os::sshd_configs:
+  permit_root_login: 'no'
+  sshd_config_loglevel: INFO
+  sshd_config_permitemptypasswords: 'no'
+  sshd_config_permituserenvironment: 'no'
+  sshd_config_login_grace_time: 60
+  sshd_config_ciphers:
+    - aes256-ctr
+    - aes192-ctr
+    - aes128-ctr
+  sshd_config_macs:
+    - hmac-sha2-512-etm@openssh.com
+    - hmac-sha2-256-etm@openssh.com
+    - umac-128-etm@openssh.com
+    - hmac-sha2-512
+    - hmac-sha2-256
+    - umac-128@openssh.com
+  sshd_config_allowgroups: []
+  sshd_config_allowusers: []
+  sshd_config_denygroups: []
+  sshd_config_denyusers: []
+  sshd_config_maxauthtries: 4
+  sshd_config_banner: /etc/issue.net
+  sshd_client_alive_count_max: 0
+  sshd_client_alive_interval: 300
+  sshd_hostbasedauthentication: 'no'
+  sshd_ignorerhosts: 'yes'
+  sshd_config_owner: root
+  sshd_config_group: root
+  sshd_config_mode: og-rwx
 
-ssh::sshd_config_ciphers:
-  - aes256-ctr
-  - aes192-ctr
-  - aes128-ctr
-
-ssh::sshd_config_kexalgorithms:
-ssh::sshd_config_macs:
-  - hmac-sha2-512-etm@openssh.com
-  - hmac-sha2-256-etm@openssh.com
-  - umac-128-etm@openssh.com
-  - hmac-sha2-512
-  - hmac-sha2-256
-  - umac-128@openssh.com
-
-ssh::sshd_config_allowgroups: []
-ssh::sshd_config_allowusers: []
-ssh::sshd_config_denygroups: []
-ssh::sshd_config_denyusers: []
-ssh::sshd_config_maxauthtries: 4
-ssh::sshd_banner_content: /etc/issue.net
-ssh::sshd_client_alive_count_max: 0
-ssh::sshd_client_alive_interval: 300
-ssh::sshd_hostbasedauthentication: no
-ssh::sshd_ignorerhosts: yes
-ssh::sshd_config_owner: root
-ssh::sshd_config_group: root
-ssh::sshd_config_mode: og-rwx
+harden_centos_os::kernel_parameters:
+  fs.suid_dumpable:
+    ensure: present
+    value: 0
+  kernel.randomize_va_space:
+    ensure: present
+    value: 2
+  net.ipv4.ip_forward:
+    value: 0
+  net.ipv4.conf.all.send_redirects:
+    value: 0
+  net.ipv4.conf.default.send_redirects:
+    value: 0
+  net.ipv4.conf.all.accept_source_route:
+    value: 0
+  net.ipv4.conf.default.accept_source_route:
+    value: 0
+  net.ipv4.conf.all.accept_redirects:
+    value: 0
+  net.ipv4.conf.default.accept_redirects:
+    value: 0
+  net.ipv4.conf.all.secure_redirects:
+    value: 0
+  net.ipv4.conf.default.secure_redirects:
+    value: 0
+  net.ipv4.conf.all.log_martians:
+    value: 1
+  net.ipv4.conf.default.log_martians:
+    value: 1
+  net.ipv4.icmp_echo_ignore_broadcasts:
+    value: 1
+  net.ipv4.icmp_ignore_bogus_error_responses:
+    value: 1
+  net.ipv4.conf.all.rp_filter:
+    value: 1
+  net.ipv4.conf.default.rp_filter:
+    value: 1
+  net.ipv4.tcp_syncookies:
+    value: 1
+  net.ipv6.conf.all.accept_ra:
+    value: 0
+  net.ipv6.conf.default.accept_ra:
+    value: 0
+  net.ipv6.conf.all.accept_redirects:
+    value: 0
+  net.ipv6.conf.default.accept_redirects:
+    value: 0
+  net.ipv4.route.flush:
+    value: 1
