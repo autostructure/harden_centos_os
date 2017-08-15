@@ -142,6 +142,8 @@ harden_centos_os::kernel_module_installs:
     command: /bin/true
 
 harden_centos_os::managed_packages:
+  aide:
+    ensure: installed
   prelink:
     ensure: absent
   setroubleshoot:
@@ -235,6 +237,18 @@ harden_centos_os::file_line_rules:
     replace: true
     path: /etc/profile
     line: umask 027
+  rescue_service_sulogin:
+    ensure: present
+    match: ^ExecStart=
+    replace: true
+    path: /usr/lib/systemd/system/rescue.service
+    line: ExecStart=-/bin/sh -c "/sbin/sulogin; /usr/bin/systemctl --fail --no-block default"
+  emergency_service_sulogin:
+    ensure: present
+    match: ^ExecStart=
+    replace: true
+    path: /usr/lib/systemd/system/emergency.service
+    line: ExecStart=-/bin/sh -c "/sbin/sulogin; /usr/bin/systemctl --fail --no-block default"
 
 harden_centos_os::aide_rules:
   /boot:

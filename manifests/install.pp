@@ -6,8 +6,30 @@ class harden_centos_os::install {
   # Install necessary kernel modules
   create_resources('kmod::install', $::harden_centos_os::kernel_module_installs)
 
+  # Install necessary file_line rules
+  create_resources('file_line', $::harden_centos_os::file_line_rules)
+
   # Add aide rules
   create_resources('aide::rule', $::harden_centos_os::aide_rules)
+
+  # Set gpgcheck on yum.conf
+  augeas { 'yum_gpgcheck':
+    context => '/files/etc/yum.conf/main',
+    changes => [
+      'set gpgcheck 1',
+    ],
+  }
+
+  # Set gpgcheck on yum repositories
+  # TODO
+  $facts['yum_repos'].each | Integer $index, String $directory | {
+    augeas { "${index}_gpgcheck":
+      context => "/files${directory}/main",
+      changes => [
+        'setm /files/etc/yum.repos.d/CentOS-Sources.repo/*[label() =~ regexp(\'^[^#]+\')] gpgcheck 1',
+      ],
+    }
+  }
 
   # Run rsyslog
   include ::rsyslog::client

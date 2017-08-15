@@ -22,6 +22,8 @@ group :test do
   gem "puppet-lint-trailing_comma-check"
   gem "puppet-lint-unquoted_string-check"
   gem "puppet-lint-version_comparison-check"
+
+  gem "semantic_puppet"
 end
 
 group :development do

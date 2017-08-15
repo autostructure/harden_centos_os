@@ -50,6 +50,7 @@ class harden_centos_os(
   Hash $sshd_configs,
   Hash $kernel_parameters,
   Hash $managed_services,
+  Hash $file_line_rules,
 ) {
   Firewall {
     require => undef,
