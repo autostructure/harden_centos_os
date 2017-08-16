@@ -1,6 +1,4 @@
 fixtures:
-  symlinks:
-    profile: "#{source_dir}"
   forge_modules:
     kmod:
       repo: "camptocamp/kmod"
@@ -26,6 +24,12 @@ fixtures:
     firewall:
       repo: "puppetlabs/firewall"
       ref: "1.9.0"
+    limits:
+      repo: "puppetlabs/limits"
+      ref: "0.1.0"
+    ntp:
+      repo: "puppetlabs/ntp"
+      ref: "6.2.0"
     stdlib:
       repo: "puppetlabs/stdlib"
       ref: "4.17.1"

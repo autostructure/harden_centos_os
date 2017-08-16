@@ -1,33 +1,72 @@
 #
 class harden_centos_os::install {
-  # Enforce basic packag rules
-  create_resources('package', $::harden_centos_os::managed_packages)
 
-  # Install necessary kernel modules
-  create_resources('kmod::install', $::harden_centos_os::kernel_module_installs)
+  # Ensure message of the day is configured properly
+  $clean_motd = regsubst($::harden_centos_os::motd, '(\\v|\\r|\\m|\\s)', '')
 
-  # Install necessary file_line rules
-  create_resources('file_line', $::harden_centos_os::file_line_rules)
-
-  # Add aide rules
-  create_resources('aide::rule', $::harden_centos_os::aide_rules)
-
-  # Set gpgcheck on yum.conf
-  augeas { 'yum_gpgcheck':
-    context => '/files/etc/yum.conf/main',
-    changes => [
-      'set gpgcheck 1',
-    ],
+  # Ensure permissions on /etc/motd are configured
+  file { '/etc/motd':
+    ensure  => file,
+    content => $clean_motd,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
   }
 
-  # Set gpgcheck on yum repositories
-  # TODO
-  $facts['yum_repos'].each | Integer $index, String $directory | {
-    augeas { "${index}_gpgcheck":
-      context => "/files${directory}/main",
-      changes => [
-        'setm /files/etc/yum.repos.d/CentOS-Sources.repo/*[label() =~ regexp(\'^[^#]+\')] gpgcheck 1',
-      ],
+  # Ensure local login warning banner is configured properly
+  $clean_issue = regsubst($::harden_centos_os::issue, '(\\v|\\r|\\m|\\s)', '')
+
+  # Ensure permissions on /etc/issue are configured
+  file { '/etc/issue':
+    ensure  => file,
+    content => $clean_issue,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+  }
+
+  # Ensure permissions on /etc/issue.net are configured
+  file { '/etc/issue.net':
+    ensure  => file,
+    content => $clean_issue,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+  }
+
+  # Enforce basic package rules
+  $::harden_centos_os::managed_packages.each | String $key, Hash $values | {
+    package { $key:
+      ensure => $values['ensure'],
+    }
+  }
+
+  # Install necessary kernel modules
+  $::harden_centos_os::kernel_module_installs.each | String $key, Hash $values | {
+    kmod::install { $key:
+      command => $values['command'],
+    }
+  }
+
+  # Install necessary kernel modules
+  $::harden_centos_os::kernel_module_options.each | String $key, Hash $values | {
+    kmod::option { $key:
+      option => $values['command'],
+      value  => $values['value'],
+    }
+  }
+
+  # Add aide rules
+  $::harden_centos_os::aide_rules.each | String $key, Hash $values | {
+    aide::rule { $key:
+      content => $values['content'],
+    }
+  }
+
+  # Add limits rules
+  $::harden_centos_os::limits.each | String $key, Hash $values | {
+    limits::fragment { $key:
+      value => $values['value'],
     }
   }
 

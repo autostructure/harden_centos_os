@@ -1,30 +1,47 @@
 ---
+# Ensure message of the day is configured properly
+harden_centos_os::motd: |
+  You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only. By using this IS (which includes any device attached to this IS), you consent to the following conditions:
+  - The USG routinely intercepts and monitors communications on this IS for purposes including, but not limited to, penetration testing, COMSEC monitoring, network operations and defense, personnel misconduct (PM), law enforcement (LE), and counterintelligence (CI) investigations.
+  - At any time, the USG may inspect and seize data stored on this IS.
+  - Communications using, or data stored on, this IS are not private, are subject to routine monitoring, interception, and search, and may be disclosed or used for any USG authorized purpose.
+  - This IS includes security measures (e.g., authentication and access controls) to protect USG interests--not for your personal benefit or privacy.
+  - Notwithstanding the above, using this IS does not constitute consent to PM, LE or CI investigative searching or monitoring of the content of privileged communications, or work product, related to personal representation or services by attorneys, psychotherapists, or clergy, and their assistants. Such communications and work product are private and confidential. See User Agreement for details.
+
+harden_centos_os::issue: Authorized uses only. All activity may be monitored and reported.
+
+harden_centos_os::ntp_servers:
+  - time.nist.gov
+
+harden_centos_os::augeas_rules:
+  # Ensure gpgcheck is globally activated
+  yum_gpgcheck:
+    context: /files/etc/yum.conf/main
+    changes:
+      - set gpgcheck 1
+  inet_interfaces:
+    context: /files/etc/postfix/main.cf
+    changes:
+      - set inet_interfaces localhost
+
+harden_centos_os::limits:
+  # Ensure core dumps are restricted
+  '*/hard/core':
+    value: '0'
+
 harden_centos_os::managed_files:
-  /etc/motd:
-    ensure: directory
-    owner: root
-    group: root
-    mode: '0644'
-  /etc/issue:
-    ensure: directory
-    owner: root
-    group: root
-    mode: '0644'
-  /etc/issue.net:
-    ensure: file
-    owner: root
-    group: root
-    mode: '0644'
   /etc/hosts.allow:
     ensure: file
     owner: root
     group: root
     mode: '0644'
+    content: "ALL: $facts['network']/$facts['netmask']"
   /etc/hosts.deny:
     ensure: file
     owner: root
     group: root
     mode: '0644'
+    content: 'ALL: ALL'
   /etc/crontab:
     ensure: file
     owner: root
@@ -115,6 +132,11 @@ harden_centos_os::managed_files:
     group: root
     mode: 'og-rwx'
 
+harden_centos_os::kernel_module_options:
+  ipv6:
+    option: disable
+    value: 1
+
 harden_centos_os::kernel_module_installs:
   cramfs:
     command: /bin/true
@@ -143,7 +165,7 @@ harden_centos_os::kernel_module_installs:
 
 harden_centos_os::managed_packages:
   aide:
-    ensure: installed
+    ensure: present
   prelink:
     ensure: absent
   setroubleshoot:
@@ -223,6 +245,53 @@ harden_centos_os::managed_services:
   autofs:
     ensure: stopped
     enable: false
+  chargen-dgram:
+    ensure: stopped
+    enable: false
+  chargen-stream:
+    ensure: stopped
+    enable: false
+  daytime-dgram:
+    ensure: stopped
+    enable: false
+  daytime-stream:
+    ensure: stopped
+    enable: false
+  discard-dgram:
+    ensure: stopped
+    enable: false
+  discard-stream:
+    ensure: stopped
+    enable: false
+  echo-dgram:
+    ensure: stopped
+    enable: false
+  echo-stream:
+    ensure: stopped
+    enable: false
+  time-dgram:
+    ensure: stopped
+    enable: false
+  time-stream:
+    ensure: stopped
+    enable: false
+  tftp:
+    ensure: stopped
+    enable: false
+  xinetd:
+    ensure: stopped
+    enable: false
+  avahi-daemon:
+    ensure: stopped
+    enable: false
+  cups:
+    ensure: stopped
+    enable: false
+  dhcpd:
+    ensure: stopped
+    enable: false
+  postfix:
+    ensure: running
 
 harden_centos_os::file_line_rules:
   /etc/bashrc_umask:

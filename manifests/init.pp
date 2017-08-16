@@ -43,7 +43,11 @@
 # Copyright 2017 Autostructure.
 #
 class harden_centos_os(
+  String $motd,
+  String $issue,
+  Array $ntp_servers,
   Hash $managed_files,
+  Hash $kernel_module_options,
   Hash $kernel_module_installs,
   Hash $managed_packages,
   Hash $aide_rules,
@@ -51,6 +55,8 @@ class harden_centos_os(
   Hash $kernel_parameters,
   Hash $managed_services,
   Hash $file_line_rules,
+  Hash $augeas_rules,
+  Hash $limits,
 ) {
   Firewall {
     require => undef,
@@ -58,6 +64,11 @@ class harden_centos_os(
 
   resources { 'firewall':
     purge => true,
+  }
+
+  # Ensure time synchronization is in use
+  class { '::ntp':
+    servers => [ 'ntp1.corp.com', 'ntp2.corp.com' ],
   }
 
   class { '::harden_centos_os::install': }
