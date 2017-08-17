@@ -34,6 +34,14 @@ class harden_centos_os::install {
     mode    => '0644',
   }
 
+  # Set kernel_parameters
+  $::harden_centos_os::kernel_parameters.each | String $key, Hash $values | {
+    sysctl { $key:
+      ensure => $values['ensure'],
+      value  => $values['value'],
+    }
+  }
+
   # Enforce basic package rules
   $::harden_centos_os::managed_packages.each | String $key, Hash $values | {
     package { $key:
@@ -57,11 +65,11 @@ class harden_centos_os::install {
   }
 
   # Add aide rules
-  $::harden_centos_os::aide_rules.each | String $key, Hash $values | {
-    aide::rule { $key:
-      content => $values['content'],
-    }
-  }
+  # $::harden_centos_os::aide_rules.each | String $key, Hash $values | {
+  #   aide::rule { $key:
+  #     content => $values['content'],
+  #   }
+  # }
 
   # Add limits rules
   $::harden_centos_os::limits.each | String $key, Hash $values | {
@@ -76,6 +84,7 @@ class harden_centos_os::install {
   # Enforce sshd rules
   class { '::ssh':
     permit_root_login                 => $harden_centos_os::sshd_configs['permit_root_login'],
+    sshd_x11_forwarding               => $harden_centos_os::sshd_configs['sshd_config_forward_x11'],
     sshd_config_loglevel              => $harden_centos_os::sshd_configs['sshd_config_loglevel'],
     sshd_config_permitemptypasswords  => $harden_centos_os::sshd_configs['sshd_config_permitemptypasswords'],
     sshd_config_permituserenvironment => $harden_centos_os::sshd_configs['sshd_config_permituserenvironment'],

@@ -8,7 +8,7 @@ fixtures:
       ref: "1.6.0"
     ssh:
       repo: "ghoneycutt/ssh"
-      ref: "3.52.0"
+      ref: "3.54.0"
     augeasproviders_core:
       repo: "herculesteam/augeasproviders_core"
       ref: "2.1.3"

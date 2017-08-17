@@ -50,7 +50,6 @@ class harden_centos_os(
   Hash $kernel_module_options,
   Hash $kernel_module_installs,
   Hash $managed_packages,
-  Hash $aide_rules,
   Hash $sshd_configs,
   Hash $kernel_parameters,
   Hash $managed_services,
@@ -76,9 +75,9 @@ class harden_centos_os(
   ~> class { '::harden_centos_os::run': }
   -> Class['::harden_centos_os']
 
-  class { '::harden_centos_os::kernel_parameters': }
-  ~> class { '::harden_centos_os::kernel_parameters_flush': }
-  -> Class['::harden_centos_os']
+  # class { '::harden_centos_os::kernel_parameters': }
+  # ~> class { '::harden_centos_os::kernel_parameters_flush': }
+  # -> Class['::harden_centos_os']
 
   class { '::harden_centos_os::pre_fw': }
   -> class { '::harden_centos_os::post_fw': }

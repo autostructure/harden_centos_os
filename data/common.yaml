@@ -47,22 +47,22 @@ harden_centos_os::managed_files:
     owner: root
     group: root
     mode: 'og-rwx'
-  /etc/crontab.hourly:
+  /etc/cron.hourly:
     ensure: directory
     owner: root
     group: root
     mode: 'og-rwx'
-  /etc/crontab.daily:
+  /etc/cron.daily:
     ensure: directory
     owner: root
     group: root
     mode: 'og-rwx'
-  /etc/crontab.weekly:
+  /etc/cron.weekly:
     ensure: directory
     owner: root
     group: root
     mode: 'og-rwx'
-  /etc/crontab.monthly:
+  /etc/cron.monthly:
     ensure: directory
     owner: root
     group: root
@@ -77,7 +77,7 @@ harden_centos_os::managed_files:
   /etc/at.deny:
     ensure: absent
   /etc/cron.allow:
-    ensure: directory
+    ensure: file
     owner: root
     group: root
     mode: 'og-rwx'
@@ -492,6 +492,7 @@ harden_centos_os::aide_rules:
 harden_centos_os::sshd_configs:
   permit_root_login: 'no'
   sshd_config_loglevel: INFO
+  sshd_config_forward_x11: 'no'
   sshd_config_permitemptypasswords: 'no'
   sshd_config_permituserenvironment: 'no'
   sshd_config_login_grace_time: 60

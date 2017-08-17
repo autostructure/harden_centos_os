@@ -47,4 +47,29 @@ class harden_centos_os::configure {
       mode   => 'g-wx,o-rwx',
     }
   }
+
+  # Ensure no world writable files exist
+  $facts['world_writable_files'].each | Integer $index, String $file | {
+    warning("File ${file} is world writable. Remove this permission or exclude from testing.")
+  }
+
+  # Ensure no unowned files or directories exist
+  $facts['unowned_files'].each | Integer $index, String $file | {
+    warning("File ${file} is unowned. Remove this file or change ownership.")
+  }
+
+  # Ensure no ungrouped files or directories exist
+  $facts['ungrouped_files'].each | Integer $index, String $file | {
+    warning("File ${file} has ungrouped. Remove this file or change group.")
+  }
+
+  # Audit SUID executables
+  $facts['suid_executables'].each | Integer $index, String $file | {
+    warning("File ${file} is an suid executale. Remove this permission or exclude from testing.")
+  }
+
+  # Audit GUID executables
+  $facts['guid_executables'].each | Integer $index, String $file | {
+    warning("File ${file} is a guid executale. Remove this permission or exclude from testing.")
+  }
 }
