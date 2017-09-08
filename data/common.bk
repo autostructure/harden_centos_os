@@ -1,0 +1,568 @@
+---
+# Ensure message of the day is configured properly
+harden_centos_os::motd: |
+  You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only. By using this IS (which includes any device attached to this IS), you consent to the following conditions:
+  - The USG routinely intercepts and monitors communications on this IS for purposes including, but not limited to, penetration testing, COMSEC monitoring, network operations and defense, personnel misconduct (PM), law enforcement (LE), and counterintelligence (CI) investigations.
+  - At any time, the USG may inspect and seize data stored on this IS.
+  - Communications using, or data stored on, this IS are not private, are subject to routine monitoring, interception, and search, and may be disclosed or used for any USG authorized purpose.
+  - This IS includes security measures (e.g., authentication and access controls) to protect USG interests--not for your personal benefit or privacy.
+  - Notwithstanding the above, using this IS does not constitute consent to PM, LE or CI investigative searching or monitoring of the content of privileged communications, or work product, related to personal representation or services by attorneys, psychotherapists, or clergy, and their assistants. Such communications and work product are private and confidential. See User Agreement for details.
+
+harden_centos_os::issue: Authorized uses only. All activity may be monitored and reported.
+
+harden_centos_os::ntp_servers:
+  - time.nist.gov
+
+harden_centos_os::augeas_rules:
+  # Ensure gpgcheck is globally activated
+  yum_gpgcheck:
+    context: /files/etc/yum.conf/main
+    changes:
+      - set gpgcheck 1
+  inet_interfaces:
+    context: /files/etc/postfix/main.cf
+    changes:
+      - set inet_interfaces localhost
+
+harden_centos_os::limits:
+  # Ensure core dumps are restricted
+  '*/hard/core':
+    value: '0'
+
+harden_centos_os::managed_files:
+  /etc/hosts.allow:
+    ensure: file
+    owner: root
+    group: root
+    mode: '0644'
+    content: "ALL: $facts['network']/$facts['netmask']"
+  /etc/hosts.deny:
+    ensure: file
+    owner: root
+    group: root
+    mode: '0644'
+    content: 'ALL: ALL'
+  /etc/crontab:
+    ensure: file
+    owner: root
+    group: root
+    mode: 'og-rwx'
+  /etc/cron.hourly:
+    ensure: directory
+    owner: root
+    group: root
+    mode: 'og-rwx'
+  /etc/cron.daily:
+    ensure: directory
+    owner: root
+    group: root
+    mode: 'og-rwx'
+  /etc/cron.weekly:
+    ensure: directory
+    owner: root
+    group: root
+    mode: 'og-rwx'
+  /etc/cron.monthly:
+    ensure: directory
+    owner: root
+    group: root
+    mode: 'og-rwx'
+  /etc/cron.d:
+    ensure: directory
+    owner: root
+    group: root
+    mode: 'og-rwx'
+  /etc/cron.deny:
+    ensure: absent
+  /etc/at.deny:
+    ensure: absent
+  /etc/cron.allow:
+    ensure: file
+    owner: root
+    group: root
+    mode: 'og-rwx'
+  /etc/at.allow:
+    ensure: directory
+    owner: root
+    group: root
+    mode: 'og-rwx'
+  /etc/passwd:
+    ensure: file
+    owner: root
+    group: root
+    mode: '0644'
+  /etc/shadow:
+    ensure: file
+    owner: root
+    group: root
+    mode: '0000'
+  /etc/group:
+    ensure: file
+    owner: root
+    group: root
+    mode: '0644'
+  /etc/gshadow:
+    ensure: file
+    owner: root
+    group: root
+    mode: '0000'
+  /etc/passwd-:
+    ensure: file
+    owner: root
+    group: root
+    mode: '0600'
+  /etc/shadow-:
+    ensure: file
+    owner: root
+    group: root
+    mode: '0600'
+  /etc/group-:
+    ensure: file
+    owner: root
+    group: root
+    mode: '0600'
+  /etc/gshadow-:
+    ensure: file
+    owner: root
+    group: root
+    mode: '0600'
+  /boot/grub2/grub.cfg:
+    ensure: file
+    owner: root
+    group: root
+    mode: 'og-rwx'
+
+harden_centos_os::kernel_module_options:
+  ipv6:
+    option: disable
+    value: 1
+
+harden_centos_os::kernel_module_installs:
+  cramfs:
+    command: /bin/true
+  freevxfs:
+    command: /bin/true
+  jffs2:
+    command: /bin/true
+  hfs:
+    command: /bin/true
+  hfsplus:
+    command: /bin/true
+  squashfs:
+    command: /bin/true
+  udf:
+    command: /bin/true
+  vfat:
+    command: /bin/true
+  dccp:
+    command: /bin/true
+  sctp:
+    command: /bin/true
+  rds:
+    command: /bin/true
+  tipc:
+    command: /bin/true
+
+harden_centos_os::managed_packages:
+  aide:
+    ensure: installed
+  prelink:
+    ensure: absent
+  setroubleshoot:
+    ensure: absent
+  mcstrans:
+    ensure: absent
+  ypbind:
+    ensure: absent
+  rsh:
+    ensure: absent
+  talk:
+    ensure: absent
+  telnet:
+    ensure: absent
+  openldap-clients:
+    ensure: absent
+  tcp_wrappers:
+    ensure: installed
+  # xorg-x11*:
+  #   ensure: absent
+
+harden_centos_os::managed_services:
+  slapd:
+    ensure: stopped
+    enable: false
+  nfs:
+    ensure: stopped
+    enable: false
+  rpcbind:
+    ensure: stopped
+    enable: false
+  named:
+    ensure: stopped
+    enable: false
+  vsftpd:
+    ensure: stopped
+    enable: false
+  httpd:
+    ensure: stopped
+    enable: false
+  dovecot:
+    ensure: stopped
+    enable: false
+  smb:
+    ensure: stopped
+    enable: false
+  squid:
+    ensure: stopped
+    enable: false
+  snmpd:
+    ensure: stopped
+    enable: false
+  ypserv:
+    ensure: stopped
+    enable: false
+  rsh.socket:
+    ensure: stopped
+    enable: false
+  rlogin.socket:
+    ensure: stopped
+    enable: false
+  rexec.socket:
+    ensure: stopped
+    enable: false
+  telnet.socket:
+    ensure: stopped
+    enable: false
+  tftp.socket:
+    ensure: stopped
+    enable: false
+  rsyncd:
+    ensure: stopped
+    enable: false
+  ntalk:
+    ensure: stopped
+    enable: false
+  autofs:
+    ensure: stopped
+    enable: false
+  chargen-dgram:
+    ensure: stopped
+    enable: false
+  chargen-stream:
+    ensure: stopped
+    enable: false
+  daytime-dgram:
+    ensure: stopped
+    enable: false
+  daytime-stream:
+    ensure: stopped
+    enable: false
+  discard-dgram:
+    ensure: stopped
+    enable: false
+  discard-stream:
+    ensure: stopped
+    enable: false
+  echo-dgram:
+    ensure: stopped
+    enable: false
+  echo-stream:
+    ensure: stopped
+    enable: false
+  time-dgram:
+    ensure: stopped
+    enable: false
+  time-stream:
+    ensure: stopped
+    enable: false
+  tftp:
+    ensure: stopped
+    enable: false
+  xinetd:
+    ensure: stopped
+    enable: false
+  avahi-daemon:
+    ensure: stopped
+    enable: false
+  cups:
+    ensure: stopped
+    enable: false
+  dhcpd:
+    ensure: stopped
+    enable: false
+  postfix:
+    ensure: running
+
+harden_centos_os::file_line_rules:
+  /etc/bashrc_umask:
+    ensure: present
+    match: ^umask
+    replace: true
+    path: /etc/bashrc
+    line: umask 027
+  /etc/profile_umask:
+    ensure: present
+    match: ^umask
+    replace: true
+    path: /etc/profile
+    line: umask 027
+  rescue_service_sulogin:
+    ensure: present
+    match: ^ExecStart=
+    replace: true
+    path: /usr/lib/systemd/system/rescue.service
+    line: ExecStart=-/bin/sh -c "/sbin/sulogin; /usr/bin/systemctl --fail --no-block default"
+  emergency_service_sulogin:
+    ensure: present
+    match: ^ExecStart=
+    replace: true
+    path: /usr/lib/systemd/system/emergency.service
+    line: ExecStart=-/bin/sh -c "/sbin/sulogin; /usr/bin/systemctl --fail --no-block default"
+
+harden_centos_os::aide_rules:
+  /boot:
+    content: /boot NORMAL
+  /bin:
+    content: /bin NORMAL
+  /sbin:
+    content: /sbin NORMAL
+  /lib:
+    content: /lib NORMAL
+  /opt:
+    content: /opt NORMAL
+  /usr:
+    content: /usr NORMAL
+  /root:
+    content: /root NORMAL
+  /usr/src:
+    content: '!/usr/src'
+  /usr/tmp:
+    content: '!/usr/tmp'
+  /etc:
+    content: /etc PERMS
+  /etc/mtab:
+    content: '!/etc/mtab'
+  /etc/.*~:
+    content: '!/etc/.*~'
+  /etc/exports:
+    content: /etc/exports NORMAL
+  /etc/fstab:
+    content: /etc/fstab NORMAL
+  /etc/passwd:
+    content: /etc/passwd NORMAL
+  /etc/group:
+    content: /etc/group NORMAL
+  /etc/gshadow:
+    content: /etc/gshadow NORMAL
+  /etc/shadow:
+    content: /etc/shadow NORMAL
+  /etc/security/opasswd:
+    content: /etc/security/opasswd NORMAL
+  /etc/hosts.allow:
+    content: /etc/hosts.allow NORMAL
+  /etc/hosts.deny:
+    content: /etc/hosts.deny NORMAL
+  /etc/sudoers:
+    content: /etc/sudoers NORMAL
+  /etc/skel:
+    content: /etc/skel NORMAL
+  /etc/logrotate.d:
+    content: /etc/logrotate.d NORMAL
+  /etc/resolv.conf:
+    content: /etc/resolv.conf DATAONLY
+  /etc/nscd.conf:
+    content: /etc/nscd.conf NORMAL
+  /etc/securetty:
+    content: /etc/securetty NORMAL
+  /etc/profile:
+    content: /etc/profile NORMAL
+  /etc/bashrc:
+    content: /etc/bashrc NORMAL
+  /etc/bash_completion.d/:
+    content: /etc/bash_completion.d/ NORMAL
+  /etc/login.defs:
+    content: /etc/login.defs NORMAL
+  /etc/zprofile:
+    content: /etc/zprofile NORMAL
+  /etc/zshrc:
+    content: /etc/zshrc NORMAL
+  /etc/zlogin:
+    content: /etc/zlogin NORMAL
+  /etc/zlogout:
+    content: /etc/zlogout NORMAL
+  /etc/profile.d/:
+    content: /etc/profile.d/ NORMAL
+  /etc/X11/:
+    content: /etc/X11/ NORMAL
+  /etc/yum.conf:
+    content: /etc/yum.conf NORMAL
+  /etc/yumex.conf:
+    content: /etc/yumex.conf NORMAL
+  /etc/yumex.profiles.conf:
+    content: /etc/yumex.profiles.conf NORMAL
+  /etc/yum/:
+    content: /etc/yum/ NORMAL
+  /etc/yum.repos.d/:
+    content: /etc/yum.repos.d/ NORMAL
+  /var/log:
+    content: /var/log LOG
+  /var/log/sa:
+    content: '!/var/log/sa'
+  /var/log/aide/aide.log:
+    content: '!/var/log/aide/aide.log'
+  /var/log/aide/aide.report:
+    content: '!/var/log/aide/aide.report'
+  /etc/audit/:
+    content: /etc/audit/ LSPP
+  /etc/libaudit.conf:
+    content: /etc/libaudit.conf LSPP
+  /usr/sbin/stunnel:
+    content: /usr/sbin/stunnel LSPP
+  /var/spool/at:
+    content: /var/spool/at LSPP
+  /etc/at.allow:
+    content: /etc/at.allow LSPP
+  /etc/at.deny:
+    content: /etc/at.deny LSPP
+  /etc/cron.allow:
+    content: /etc/cron.allow LSPP
+  /etc/cron.deny:
+    content: /etc/cron.deny LSPP
+  /etc/cron.d/:
+    content: /etc/cron.d/ LSPP
+  /etc/cron.daily/:
+    content: /etc/cron.daily/ LSPP
+  /etc/cron.hourly/:
+    content: /etc/cron.hourly/ LSPP
+  /etc/cron.monthly/:
+    content: /etc/cron.monthly/ LSPP
+  /etc/cron.weekly/:
+    content: /etc/cron.weekly/ LSPP
+  /etc/crontab:
+    content: /etc/crontab LSPP
+  /var/spool/cron/root:
+    content: /var/spool/cron/root LSPP
+  /var/log/faillog:
+    content: /var/log/faillog LSPP
+  /var/log/lastlog:
+    content: /var/log/lastlog LSPP
+  /etc/hosts:
+    content: /etc/hosts LSPP
+  /etc/sysconfig:
+    content: /etc/sysconfig LSPP
+  /etc/inittab:
+    content: /etc/inittab LSPP
+  /etc/grub:
+    content: /etc/grub LSPP
+  /etc/rc.d:
+    content: /etc/rc.d LSPP
+  /etc/ld.so.conf:
+    content: /etc/ld.so.conf LSPP
+  /etc/localtime:
+    content: /etc/localtime LSPP
+  /etc/sysctl.conf:
+    content: /etc/sysctl.conf LSPP
+  /etc/pam.d:
+    content: /etc/pam.d LSPP
+  /etc/security:
+    content: /etc/security LSPP
+  /etc/aliases:
+    content: /etc/aliases LSPP
+  /etc/postfix:
+    content: /etc/postfix LSPP
+  /etc/ssh/sshd_config:
+    content: /etc/ssh/sshd_config LSPP
+  /etc/ssh/ssh_config:
+    content: /etc/ssh/ssh_config LSPP
+  /etc/stunnel:
+    content: /etc/stunnel LSPP
+  /etc/vsftpd.ftpusers:
+    content: /etc/vsftpd.ftpusers LSPP
+  /etc/vsftpd:
+    content: /etc/vsftpd LSPP
+  /etc/issue:
+    content: /etc/issue LSPP
+  /etc/issue.net:
+    content: /etc/issue.net LSPP
+  /etc/cups:
+    content: /etc/cups LSPP
+  /var/log/and-httpd:
+    content: '!/var/log/and-httpd'
+
+harden_centos_os::sshd_configs:
+  permit_root_login: 'no'
+  sshd_config_loglevel: INFO
+  sshd_config_forward_x11: 'no'
+  sshd_config_permitemptypasswords: 'no'
+  sshd_config_permituserenvironment: 'no'
+  sshd_config_login_grace_time: 60
+  sshd_config_ciphers:
+    - aes256-ctr
+    - aes192-ctr
+    - aes128-ctr
+  sshd_config_macs:
+    - hmac-sha2-512-etm@openssh.com
+    - hmac-sha2-256-etm@openssh.com
+    - umac-128-etm@openssh.com
+    - hmac-sha2-512
+    - hmac-sha2-256
+    - umac-128@openssh.com
+  sshd_config_allowgroups: []
+  sshd_config_allowusers: []
+  sshd_config_denygroups: []
+  sshd_config_denyusers: []
+  sshd_config_maxauthtries: 4
+  sshd_config_banner: /etc/issue.net
+  sshd_client_alive_count_max: 0
+  sshd_client_alive_interval: 300
+  sshd_hostbasedauthentication: 'no'
+  sshd_ignorerhosts: 'yes'
+  sshd_config_owner: root
+  sshd_config_group: root
+  sshd_config_mode: og-rwx
+
+harden_centos_os::kernel_parameters:
+  fs.suid_dumpable:
+    value: 0
+  kernel.randomize_va_space:
+    value: 2
+  net.ipv4.ip_forward:
+    value: 0
+  net.ipv4.conf.all.send_redirects:
+    value: 0
+  net.ipv4.conf.default.send_redirects:
+    value: 0
+  net.ipv4.conf.all.accept_source_route:
+    value: 0
+  net.ipv4.conf.default.accept_source_route:
+    value: 0
+  net.ipv4.conf.all.accept_redirects:
+    value: 0
+  net.ipv4.conf.default.accept_redirects:
+    value: 0
+  net.ipv4.conf.all.secure_redirects:
+    value: 0
+  net.ipv4.conf.default.secure_redirects:
+    value: 0
+  net.ipv4.conf.all.log_martians:
+    value: 1
+  net.ipv4.conf.default.log_martians:
+    value: 1
+  net.ipv4.icmp_echo_ignore_broadcasts:
+    value: 1
+  net.ipv4.icmp_ignore_bogus_error_responses:
+    value: 1
+  net.ipv4.conf.all.rp_filter:
+    value: 1
+  net.ipv4.conf.default.rp_filter:
+    value: 1
+  net.ipv4.tcp_syncookies:
+    value: 1
+  net.ipv6.conf.all.accept_ra:
+    value: 0
+  net.ipv6.conf.default.accept_ra:
+    value: 0
+  net.ipv6.conf.all.accept_redirects:
+    value: 0
+  net.ipv6.conf.default.accept_redirects:
+    value: 0
