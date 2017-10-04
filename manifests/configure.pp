@@ -22,6 +22,7 @@ class harden_centos_os::configure {
     }
   }
 
+  # 5.1.2 Ensure permissions on /etc/crontab are configured
   if($harden_centos_os::ensure_permissions_on__etc_crontab_are_configured) {
     file { '/etc/crontab':
       ensure => file,

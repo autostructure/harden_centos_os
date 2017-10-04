@@ -280,9 +280,10 @@ class harden_centos_os(
   }
 
   # Ensure time synchronization is in use
-  class { '::ntp':
-    servers => [ 'ntp1.corp.com', 'ntp2.corp.com' ],
-  }
+  # TODO: Set NTP with passed in Variables
+  # class { '::ntp':
+  #   servers => [ 'ntp1.corp.com', 'ntp2.corp.com' ],
+  # }
 
   class { '::harden_centos_os::install': }
   -> class { '::harden_centos_os::configure': }
